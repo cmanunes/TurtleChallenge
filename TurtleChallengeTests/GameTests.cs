@@ -1,5 +1,5 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
 using TurtleChallenge;
 
 namespace TurtleChallengeTests
@@ -11,7 +11,8 @@ namespace TurtleChallengeTests
         public void WhenDirectionIsNorth_UpdatingDirection_ShouldChangeToEast()
         {
             //Arrange
-            Game game = new Game("", "");
+            Mock<IGameSettings> _gameSettings = new Mock<IGameSettings>();
+            Game game = new Game(_gameSettings.Object);
             Position actualPosition = new Position
             {
                 direction = "north", point = new Point { x = 0, y = 0 }
@@ -28,7 +29,8 @@ namespace TurtleChallengeTests
         public void WhenDirectionIsEast_UpdatingDirection_ShouldChangeToSouth()
         {
             //Arrange
-            Game game = new Game("", "");
+            Mock<IGameSettings> _gameSettings = new Mock<IGameSettings>();
+            Game game = new Game(_gameSettings.Object);
             Position actualPosition = new Position
             {
                 direction = "east",
@@ -46,7 +48,8 @@ namespace TurtleChallengeTests
         public void WhenDirectionIsSouth_UpdatingDirection_ShouldChangeToWest()
         {
             //Arrange
-            Game game = new Game("", "");
+            Mock<IGameSettings> _gameSettings = new Mock<IGameSettings>();
+            Game game = new Game(_gameSettings.Object);
             Position actualPosition = new Position
             {
                 direction = "south",
@@ -64,7 +67,8 @@ namespace TurtleChallengeTests
         public void WhenDirectionIsWest_UpdatingDirection_ShouldChangeToNorth()
         {
             //Arrange
-            Game game = new Game("", "");
+            Mock<IGameSettings> _gameSettings = new Mock<IGameSettings>();
+            Game game = new Game(_gameSettings.Object);
             Position actualPosition = new Position
             {
                 direction = "west",
@@ -82,7 +86,8 @@ namespace TurtleChallengeTests
         public void WhenDirectionIsNorth_UpdatingPosition_ShouldDecreaseY()
         {
             //Arrange
-            Game game = new Game("", "");
+            Mock<IGameSettings> _gameSettings = new Mock<IGameSettings>();
+            Game game = new Game(_gameSettings.Object);
             Position actualPosition = new Position
             {
                 direction = "north",
@@ -100,7 +105,8 @@ namespace TurtleChallengeTests
         public void WhenDirectionIsSouth_UpdatingPosition_ShouldIncreaseY()
         {
             //Arrange
-            Game game = new Game("", "");
+            Mock<IGameSettings> _gameSettings = new Mock<IGameSettings>();
+            Game game = new Game(_gameSettings.Object);
             Position actualPosition = new Position
             {
                 direction = "south",
@@ -118,7 +124,8 @@ namespace TurtleChallengeTests
         public void WhenDirectionIsWest_UpdatingPosition_ShouldDecreaseX()
         {
             //Arrange
-            Game game = new Game("", "");
+            Mock<IGameSettings> _gameSettings = new Mock<IGameSettings>();
+            Game game = new Game(_gameSettings.Object);
             Position actualPosition = new Position
             {
                 direction = "west",
@@ -136,7 +143,8 @@ namespace TurtleChallengeTests
         public void WhenDirectionIsEast_UpdatingPosition_ShouldIncreaseX()
         {
             //Arrange
-            Game game = new Game("", "");
+            Mock<IGameSettings> _gameSettings = new Mock<IGameSettings>();
+            Game game = new Game(_gameSettings.Object);
             Position actualPosition = new Position
             {
                 direction = "east",

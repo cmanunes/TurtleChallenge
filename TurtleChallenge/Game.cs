@@ -7,18 +7,20 @@ using System.Threading.Tasks;
 
 namespace TurtleChallenge
 {
-    public class Game
+    public class Game : IGame
     {
-        private GameSettings gameSettings = new GameSettings();
-        private ArrayList movesList = new ArrayList();
-        private ArrayList sequences = new ArrayList();
-        private bool correctGameSettings = true;
+        private IGameSettings _gameSettings;
         private string gameSettingFileName = string.Empty;
         private string movesFileName = string.Empty;
         Position initialPosition = new Position();
 
 
-        public Game(string gameSettingFileName, string movesFileName)
+        public Game(IGameSettings gameSettings)
+        {
+            _gameSettings = gameSettings;
+        }
+
+        public void Run(string gameSettingFileName, string movesFileName)
         {
             this.gameSettingFileName = gameSettingFileName;
             this.movesFileName = movesFileName;
@@ -26,150 +28,19 @@ namespace TurtleChallenge
             StartGame();
         }
 
-        private void GetMoves()
-        {
-            if (File.Exists(movesFileName))
-            {
-                using (var fileStream = File.OpenRead(movesFileName))
-                using (var streamReader = new StreamReader(fileStream, Encoding.UTF8, true, 1024))
-                {
-                    String line;
-                    while ((line = streamReader.ReadLine()) != null)
-                    {
-                        switch (line.ToLowerInvariant())
-                        {
-                            case "begin":
-                                movesList = new ArrayList();
-                                break;
-                            case "end":
-                                sequences.Add(movesList);
-                                break;
-                            default:
-                                if (line != "" && (line == "r" || line == "m"))
-                                {
-                                    movesList.Add(line);
-                                }
-                                break;
-                        }
-                    }                    
-                }
-            }
-            else
-            {
-                correctGameSettings = false;
-                Console.WriteLine("Moves file does not exists!");
-            }
-        }
-
-        private void GetGameSettings()
-        {
-            if (File.Exists(gameSettingFileName))
-            {
-                using (var fileStream = File.OpenRead(gameSettingFileName))
-                using (var streamReader = new StreamReader(fileStream, Encoding.UTF8, true, 1024))
-                {
-                    int lineNumber = 1;
-                    String line;
-                    while ((line = streamReader.ReadLine()) != null)
-                    {
-                        switch (lineNumber)
-                        {
-                            case 1: // number of columns and rows
-                                var data = line.Trim().Split(',').Select(n => Convert.ToInt32(n)).ToArray();
-                                if (data.Length == 2)
-                                {
-                                    gameSettings.Columns = data[0];
-                                    gameSettings.Rows = data[1];
-                                }
-                                else
-                                {
-                                    correctGameSettings = false;
-                                    return;
-                                }
-                                break;
-                            case 2: // initial position
-                                var initPosition = line.Trim().Split(',');
-                                if (initPosition.Length == 3)
-                                {
-                                    gameSettings.initialPosition = new Position
-                                    {
-                                        point = new Point
-                                        {
-                                            x = Convert.ToInt32(initPosition[0]),
-                                            y = Convert.ToInt32(initPosition[1])
-                                        },
-                                        direction = initPosition[2].ToLowerInvariant()
-                                    };
-
-                                    initialPosition = new Position
-                                    {
-                                        point = new Point
-                                        {
-                                            x = Convert.ToInt32(initPosition[0]),
-                                            y = Convert.ToInt32(initPosition[1])
-                                        },
-                                        direction = initPosition[2].ToLowerInvariant()
-                                    };
-                                }
-                                else
-                                {
-                                    correctGameSettings = false;
-                                    return;
-                                }
-                                break;
-                            case 3: // exit position
-                                var exitPosition = line.Trim().Split(',').Select(n => Convert.ToInt32(n)).ToArray();
-                                if (exitPosition.Length == 2)
-                                {
-                                    gameSettings.exitPosition = new Point
-                                    {
-                                        x = exitPosition[0],
-                                        y = exitPosition[1]
-                                    };
-                                }
-                                else
-                                {
-                                    correctGameSettings = false;
-                                    return;
-                                }
-                                break;
-                            default: // mines
-                                if (line.Trim() != "")
-                                {
-                                    string minePosition = line.Trim();
-                                    if (!gameSettings.mines.ContainsKey(minePosition))
-                                    {
-                                        gameSettings.mines.Add(minePosition, minePosition);
-                                    }
-                                }
-                                break;
-                        }
-
-                        ++lineNumber;
-                    }
-
-                }
-            }
-            else
-            {
-                correctGameSettings = false;
-                Console.WriteLine("Game settings file does not exists!");
-            }
-        }
-
         private void StartGame()
         {
-            GetGameSettings();
+            _gameSettings.GetGameSettings(gameSettingFileName);
 
-            if (!correctGameSettings)
+            if (!_gameSettings.correctGameSettings)
             {
                 Console.WriteLine("Incorrect game settings!");
             }
             else
             {
-                GetMoves();
+                _gameSettings.GetMoves(movesFileName);
 
-                if (movesList.Count == 0)
+                if (_gameSettings.movesList.Count == 0)
                 {
                     Console.WriteLine("Incorret number of moves!");
                 }
@@ -179,33 +50,33 @@ namespace TurtleChallenge
                 }
             }
         }
-
+        
         private void PlayGame()
         {
 
-            for (int k = 0; k < sequences.Count; k++)
+            for (int k = 0; k < _gameSettings.sequences.Count; k++)
             {
                 int counter = 1;
                 bool continueGame = true;
-                movesList = (ArrayList)sequences[k];
-                int numberOfMoves = movesList.Count;
+                _gameSettings.movesList = (ArrayList)_gameSettings.sequences[k];
+                int numberOfMoves = _gameSettings.movesList.Count;
                 Position actualPosition = new Position
                 {
-                    direction = initialPosition.direction,
+                    direction = _gameSettings.initialPosition.direction,
                     point = new Point
                     {
-                        x = initialPosition.point.x,
-                        y = initialPosition.point.y
+                        x = _gameSettings.initialPosition.point.x,
+                        y = _gameSettings.initialPosition.point.y
                     }
                 };
 
                 while (counter <= numberOfMoves && continueGame)
                 {
-                    if ((string)movesList[counter - 1] == "r")
+                    if ((string)_gameSettings.movesList[counter - 1] == "r")
                     {
                         actualPosition.direction = UpdateDirection(actualPosition.direction);
                     }
-                    if ((string)movesList[counter - 1] == "m")
+                    if ((string)_gameSettings.movesList[counter - 1] == "m")
                     {
                         if (IsNextMovementOutsideBorders(actualPosition))
                         {
@@ -294,7 +165,7 @@ namespace TurtleChallenge
             {
                 return true;
             }
-            else if (actualPosition.direction == "east" && actualPosition.point.x + 1 >= gameSettings.Columns)
+            else if (actualPosition.direction == "east" && actualPosition.point.x + 1 >= _gameSettings.Columns)
             {
                 return true;
             }
@@ -302,7 +173,7 @@ namespace TurtleChallenge
             {
                 return true;
             }
-            else if (actualPosition.direction == "south" && actualPosition.point.y + 1 >= gameSettings.Rows)
+            else if (actualPosition.direction == "south" && actualPosition.point.y + 1 >= _gameSettings.Rows)
             {
                 return true;
             }
@@ -317,7 +188,7 @@ namespace TurtleChallenge
             if (actualPosition.direction == "west")
             {
                 newPointCoord = (actualPosition.point.x - 1).ToString() + "," + (actualPosition.point.y).ToString();
-                if (gameSettings.mines.ContainsKey(newPointCoord))
+                if (_gameSettings.mines.ContainsKey(newPointCoord))
                 {
                     return true;
                 }
@@ -325,7 +196,7 @@ namespace TurtleChallenge
             else if (actualPosition.direction == "east")
             {
                 newPointCoord = (actualPosition.point.x + 1).ToString() + "," + (actualPosition.point.y).ToString();
-                if (gameSettings.mines.ContainsKey(newPointCoord))
+                if (_gameSettings.mines.ContainsKey(newPointCoord))
                 {
                     return true;
                 }
@@ -333,7 +204,7 @@ namespace TurtleChallenge
             else if (actualPosition.direction == "north")
             {
                  newPointCoord = (actualPosition.point.x).ToString() + "," + (actualPosition.point.y - 1).ToString();
-                if (gameSettings.mines.ContainsKey(newPointCoord))
+                if (_gameSettings.mines.ContainsKey(newPointCoord))
                 {
                     return true;
                 }
@@ -341,7 +212,7 @@ namespace TurtleChallenge
             else if (actualPosition.direction == "south")
             {
                 newPointCoord = (actualPosition.point.x).ToString() + "," + (actualPosition.point.y + 1).ToString();
-                if (gameSettings.mines.ContainsKey(newPointCoord))
+                if (_gameSettings.mines.ContainsKey(newPointCoord))
                 {
                     return true;
                 }
@@ -354,8 +225,8 @@ namespace TurtleChallenge
         {
             if (actualPosition.direction == "west")
             {
-                if (gameSettings.exitPosition.x == actualPosition.point.x - 1 &&
-                    gameSettings.exitPosition.y == actualPosition.point.y)
+                if (_gameSettings.exitPosition.x == actualPosition.point.x - 1 &&
+                    _gameSettings.exitPosition.y == actualPosition.point.y)
                 {
                     return true;
                 }
@@ -363,8 +234,8 @@ namespace TurtleChallenge
             else if (actualPosition.direction == "east")
             {
                 string newPointCoord = (actualPosition.point.x + 1).ToString() + "," + (actualPosition.point.y).ToString();
-                if (gameSettings.exitPosition.x == actualPosition.point.x + 1 &&
-                    gameSettings.exitPosition.y == actualPosition.point.y)
+                if (_gameSettings.exitPosition.x == actualPosition.point.x + 1 &&
+                    _gameSettings.exitPosition.y == actualPosition.point.y)
                 {
                     return true;
                 }
@@ -372,16 +243,16 @@ namespace TurtleChallenge
             else if (actualPosition.direction == "north")
             {
                 string newPointCoord = (actualPosition.point.x).ToString() + "," + (actualPosition.point.y - 1).ToString();
-                if (gameSettings.exitPosition.x == actualPosition.point.x &&
-                    gameSettings.exitPosition.y == actualPosition.point.y - 1)
+                if (_gameSettings.exitPosition.x == actualPosition.point.x &&
+                    _gameSettings.exitPosition.y == actualPosition.point.y - 1)
                 {
                     return true;
                 }
             }
             else if (actualPosition.direction == "south")
             {
-                if (gameSettings.exitPosition.x == actualPosition.point.x &&
-                    gameSettings.exitPosition.y == actualPosition.point.y + 1)
+                if (_gameSettings.exitPosition.x == actualPosition.point.x &&
+                    _gameSettings.exitPosition.y == actualPosition.point.y + 1)
                 {
                     return true;
                 }

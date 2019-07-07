@@ -7,3 +7,15 @@ C:\Temp\Tests\TurtleChallenge\TurtleChallenge\obj\Debug\TurtleChallenge.csprojAs
 C:\Temp\Tests\TurtleChallenge\TurtleChallenge\obj\Debug\TurtleChallenge.csproj.CoreCompileInputs.cache
 C:\Temp\Tests\TurtleChallenge\TurtleChallenge\obj\Debug\TurtleChallenge.exe
 C:\Temp\Tests\TurtleChallenge\TurtleChallenge\obj\Debug\TurtleChallenge.pdb
+C:\Temp\Tests\TurtleChallenge\TurtleChallenge\TurtleChallenge\obj\Debug\TurtleChallenge.csproj.CoreCompileInputs.cache
+C:\Temp\Tests\TurtleChallenge\TurtleChallenge\TurtleChallenge\obj\Debug\TurtleChallenge.exe
+C:\Temp\Tests\TurtleChallenge\TurtleChallenge\TurtleChallenge\obj\Debug\TurtleChallenge.pdb
+C:\Temp\Tests\TurtleChallenge\TurtleChallenge\TurtleChallenge\bin\Debug\game-settings
+C:\Temp\Tests\TurtleChallenge\TurtleChallenge\TurtleChallenge\bin\Debug\moves
+C:\Temp\Tests\TurtleChallenge\TurtleChallenge\TurtleChallenge\bin\Debug\TurtleChallenge.exe.config
+C:\Temp\Tests\TurtleChallenge\TurtleChallenge\TurtleChallenge\bin\Debug\TurtleChallenge.exe
+C:\Temp\Tests\TurtleChallenge\TurtleChallenge\TurtleChallenge\bin\Debug\TurtleChallenge.pdb
+C:\Temp\Tests\TurtleChallenge\TurtleChallenge\TurtleChallenge\bin\Debug\StructureMap.dll
+C:\Temp\Tests\TurtleChallenge\TurtleChallenge\TurtleChallenge\bin\Debug\StructureMap.xml
+C:\Temp\Tests\TurtleChallenge\TurtleChallenge\TurtleChallenge\obj\Debug\TurtleChallenge.csproj.CopyComplete
+C:\Temp\Tests\TurtleChallenge\TurtleChallenge\TurtleChallenge\obj\Debug\TurtleChallenge.csprojAssemblyReference.cache

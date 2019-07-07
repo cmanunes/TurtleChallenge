@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="StructureMap, Version=4.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\StructureMap.4.7.1\lib\net45\StructureMap.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -45,6 +48,9 @@
   <ItemGroup>
     <Compile Include="Game.cs" />
     <Compile Include="GameSettings.cs" />
+    <Compile Include="IGame.cs" />
+    <Compile Include="IGameSettings.cs" />
+    <Compile Include="IPosition.cs" />
     <Compile Include="Point.cs" />
     <Compile Include="Position.cs" />
     <Compile Include="TurtleChallenge.cs" />
@@ -55,6 +61,7 @@
     <None Include="game-settings">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <None Include="moves">
